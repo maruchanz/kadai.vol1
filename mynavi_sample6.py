@@ -1,4 +1,4 @@
-import os   
+import os
 from selenium.webdriver import Chrome, ChromeOptions
 import time
 import pandas as pd
@@ -28,6 +28,7 @@ def set_driver(driver_path, headless_flg):
 
 # main処理
 
+
 def main():
     search_keyword = input("キーワードを入力してください>>> ")
     # driverを起動
@@ -46,7 +47,8 @@ def main():
         # ポップアップを閉じる
         driver.execute_script('document.querySelector(".karte-close").click()')
     except:
-        pass    
+        pass
+    
     # 検索窓に入力
     driver.find_element_by_class_name(
         "topSearch__text").send_keys(search_keyword)
@@ -54,42 +56,35 @@ def main():
     driver.find_element_by_class_name("topSearch__button").click()
 
     # ページ終了まで繰り返し取得
+    df = pd.DataFrame({'name':[],'salary':[]})
     exp_name_list = []
     exp_salary_list = []
-    page_num = driver.find_elements_by_class_name("js__searchRecruit--count")
-    page_count = int(page_num[0].text)//50
-    print(page_count)
+    page_num = driver.find_elements_by_class_name("js__searchRecruit--count").text
+    try:
+        page_count = int(page_num.[0]/50)
+        print(page_count)
+    except:
+        print("上手くページが取得できません。")
     # 検索結果の一番上の会社名を取得
 
-    for n in range(page_count):
-            name_list = driver.find_elements_by_class_name("cassetteRecruit__name")
-            salary_list = driver.find_elements_by_class_name("tableCondition__body")
-
-            # 1ページ分繰り返し
-            # print(len(name_list))
-            for name, salary in zip_longest(name_list, salary_list):
-                exp_name_list.append(name.text)
-                exp_salary_list.append(salary.text)
-                print(name.text)
-                print(salary.text)    
-            # # buttonタグでないとclikはうまくいかない
-            # driver.find_element_by_class_name("iconFont--arrowLeft").click()
-            url = driver.find_element_by_class_name("iconFont--arrowLeft")
-            # selector = '{{.}}'
-            # url=driver.find_element_by_css_selector(selector)
-            URL=url.get_attribute("href")
-            driver.get(URL)
-    # for n in range(page_count):
+    # for n in page_count
     #         name_list = driver.find_elements_by_class_name("cassetteRecruit__name")
     #         salary_list = driver.find_elements_by_class_name("tableCondition__body")
+    #         driver.find_element_by_class_name("iconFont--arrowLeft").click()
     #         # 1ページ分繰り返し
     #         # print(len(name_list))
-    #         for name, salary in zip_longest(name_list, salary_list):
+    #         for name, salary in itertools.zip_longest(name_list, salary_list):
     #             exp_name_list.append(name.text)
     #             exp_salary_list.append(salary.text)
     #             print(name.text)
-    #             print(salary.text)    
-    #         driver.find_element_by_class_name("iconFont--arrowLeft").click()
+    #             print(salary.text)
+                　name = exp_name_list
+                  salary = exp_salary_list
+    series = pd.Series([name, salary],["name", "salary"])  
+    print(series)
+    df = df.append(series, ignore_index =True)
+    df.to_csv('hoge.csv')
+    print('完了')
 
     # while True:
     #     try: 
@@ -106,6 +101,8 @@ def main():
     #     except:
     #         driver.quit()
     #     break
+
+
 
 # 直接起動された場合はmain()を起動(モジュールとして呼び出された場合は起動しないようにするため)
 if __name__ == "__main__":
