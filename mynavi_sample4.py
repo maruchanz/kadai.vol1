@@ -67,11 +67,11 @@ def main():
 
             # 1ページ分繰り返し
             # print(len(name_list))
-            for name, salary in zip_longest(name_list, salary_list):
+            for name in name_list:
                 exp_name_list.append(name.text)
-                exp_salary_list.append(salary.text)
+                # exp_salary_list.append(salary.text)
                 print(name.text)
-                print(salary.text)    
+                # print(salary.text)    
             # # buttonタグでないとclikはうまくいかない
             # driver.find_element_by_class_name("iconFont--arrowLeft").click()
             url = driver.find_element_by_class_name("iconFont--arrowLeft")

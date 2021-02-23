@@ -1,4 +1,4 @@
-import os
+import os   
 from selenium.webdriver import Chrome, ChromeOptions
 import time
 import pandas as pd
@@ -28,7 +28,6 @@ def set_driver(driver_path, headless_flg):
 
 # main処理
 
-
 def main():
     search_keyword = input("キーワードを入力してください>>> ")
     # driverを起動
@@ -47,8 +46,7 @@ def main():
         # ポップアップを閉じる
         driver.execute_script('document.querySelector(".karte-close").click()')
     except:
-        pass
-    
+        pass    
     # 検索窓に入力
     driver.find_element_by_class_name(
         "topSearch__text").send_keys(search_keyword)
@@ -60,26 +58,30 @@ def main():
     exp_name_list = []
     exp_salary_list = []
     page_num = driver.find_elements_by_class_name("js__searchRecruit--count")
+    
+    # try:
     page_count = int(page_num[0].text)//50
     print(page_count)
-
+    # except:
+    #     pass
     # 検索結果の一番上の会社名を取得
 
-    # for n in page_count:
-    name_list = driver.find_elements_by_class_name("cassetteRecruit__name")
-    salary_list = driver.find_elements_by_class_name("tableCondition__body")
-    
+    for n in range(page_count):
+        name_list = driver.find_elements_by_class_name("cassetteRecruit__name")
+        salary_list = driver.find_elements_by_class_name("tableCondition__body")
 
-    # driver.find_element_by_class_name("iconFont--arrowLeft").click()
-                # 1ページ分繰り返し
-                # print(len(name_list))
-    # zip_longestだと要素数が合致しないときに、Noneが出てきてしまうため、ダメ。
-    for name in name_list:
-        exp_name_list.append(name.text)
-    for salary in salary_list:
-        exp_salary_list.append(salary.text)
-        # # print(name.text)
-        # print(salary.text)　
+        for name in name_list:
+            exp_name_list.append(name.text)
+
+        for salary in salary_list:
+            exp_salary_list.append(salary.text)
+            # # print(name.text)
+            # print(salary.text)　
+
+        url = driver.find_element_by_class_name("iconFont--arrowLeft")
+        URL=url.get_attribute("href")
+        driver.get(URL)
+
 
     name = exp_name_list
     salary = exp_salary_list
@@ -88,22 +90,6 @@ def main():
     df = df.append(series, ignore_index =True)
     df.to_csv('hoge.csv')
     print('完了')
-
-    # while True:
-    #     try: 
-    #         name_list = driver.find_elements_by_class_name("cassetteRecruit__name")
-    #         salary_list = driver.find_elements_by_class_name("tableCondition__body")
-    #         driver.find_element_by_class_name("iconFont--arrowLeft").click()
-    #         # 1ページ分繰り返し
-    #         # print(len(name_list))
-    #         for name, salary in itertools.zip_longest(name_list, salary_list):
-    #             exp_name_list.append(name.text)
-    #             exp_salary_list.append(salary.text)
-    #             print(name.text)
-    #             print(salary.text)
-    #     except:
-    #         driver.quit()
-    #     break
 
 
 
